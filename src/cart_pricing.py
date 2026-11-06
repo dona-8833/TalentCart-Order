@@ -114,12 +114,17 @@ def calculate_order_summary(cart: Dict[str, Any]) -> Dict[str, Any]:
     # Step 1: Gross Subtotal
     subtotal = calculate_subtotal(items)
 
+    discountable_items = [
+        item for item in cart["items"] if item["is_discountable"] is True]
+
+    discounted_item_subtotal = calculate_subtotal(discountable_items)
     # Step 2: Tier Discount
     # BUG IDENTIFICATION POINT:
     # The starter code passes the entire subtotal directly to calculate_tier_discount,
     # completely ignoring whether individual items have `is_discountable: False`
     # (such as gift cards or promotional exclusions).
-    discount_amount = calculate_tier_discount(subtotal, tier)
+    
+    discount_amount = calculate_tier_discount(discounted_item_subtotal, tier)
 
     # Step 3: Discounted Subtotal
     discounted_subtotal = round(max(0.0, subtotal - discount_amount), 2)
